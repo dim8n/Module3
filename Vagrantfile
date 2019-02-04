@@ -19,13 +19,13 @@ Vagrant.configure("2") do |config|
 			cp -f /vagrant/mod_jk.so /etc/httpd/modules/
 			chmod 755 /etc/httpd/modules/mod_jk.so
 			cp -f /vagrant/httpd_mod_jk.conf /etc/httpd/conf.d/
-			mkdir /etc/httpd/test/
 			cp -f /vagrant/workers.properties /etc/httpd/conf/
 			firewall-cmd --zone=public --add-port=80/tcp --permanent
 			firewall-cmd --reload
 			systemctl stop firewalld
 			systemctl enable httpd
-      systemctl start httpd
+      systemctl stop httpd
+			systemctl start httpd
   	SHELL
   end
 
