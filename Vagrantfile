@@ -33,7 +33,6 @@ Vagrant.configure("2") do |config|
 	    config.vm.define "inserver#{i}" do |node|
 					node.vm.hostname = "inserver#{i}"
 	        node.vm.network "private_network", ip: "192.168.0.#{10+i}"
-					node.vm.network "forwarded_port", guest: 8080, host: 8400+i
 					node.vm.provision "shell", inline: <<-SHELL
 						yum install java-1.8.0-openjdk -y -q
 						yum install tomcat tomcat-webapps tomcat-admin-webapps -y -q
