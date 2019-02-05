@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
 		vb.check_guest_additions=false
 	end
 
-	File.open("workers.properties", "w") do |f|
+	File.open("workers.properties", "w") do |f|			#generating worker.properties file
 	  f.write("worker.list=myworker\n")
 	  f.write("\n")
 	  for i in 1..$TOMCAT_COUNT
@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
 	  f.close
 	end
 
-	File.open("hosts", "w") do |f|
+	File.open("hosts", "w") do |f|			#generating hosts file
 	  f.write("127.0.0.1 localhost\n")
 	  f.write("#{$subnetwork_net}10 frontserver1\n")
 	  for i in 1..$TOMCAT_COUNT
