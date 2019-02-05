@@ -1,4 +1,5 @@
 $TOMCAT_COUNT = 2
+$subnetwork_net = "192.168.0."
 
 Vagrant.configure("2") do |config|
 	config.vm.box = "bento/centos-7.5"
@@ -21,9 +22,19 @@ Vagrant.configure("2") do |config|
 	  end
 	  f.write("worker.myworker.type=lb\n")
 	  f.write("\n")
-	  f.write("worker.myworker.balance_workers=")
+	  f.write("worker.myworker.balance_workers=myworker1")
+	  for i in 2..$TOMCAT_COUNT
+	    f.write(",myworker#{i}")
+	  end
+	  f.write("\n")
+	  f.close
+	end
+
+	File.open("hosts", "w") do |f|
+	  f.write("127.0.0.1 localhost\n")
+	  f.write("#{$subnetwork_net}10 frontserver1\n")
 	  for i in 1..$TOMCAT_COUNT
-	    f.write("myworker#{i},")
+	    f.write("#{$subnetwork_net}#{10+i} inserver#{i}\n")
 	  end
 	  f.write("\n")
 	  f.close
@@ -31,7 +42,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "frontserver1" do |server1|
   	server1.vm.hostname = "frontserver1"
-  	server1.vm.network "private_network", ip: "192.168.0.10"
+  	server1.vm.network "private_network", ip: "#{$subnetwork_net}10"
     server1.vm.network "forwarded_port", guest: 80, host: 8400
   	server1.vm.provision "shell", inline: <<-SHELL
       yum install httpd -y -q
@@ -51,7 +62,7 @@ Vagrant.configure("2") do |config|
 	(1..$TOMCAT_COUNT).each do |i|
 	    config.vm.define "inserver#{i}" do |node|
 					node.vm.hostname = "inserver#{i}"
-	        node.vm.network "private_network", ip: "192.168.0.#{10+i}"
+	        node.vm.network "private_network", ip: "#{$subnetwork_net}#{10+i}"
 					node.vm.provision "shell", inline: <<-SHELL
 						yum install java-1.8.0-openjdk -y -q
 						yum install tomcat tomcat-webapps tomcat-admin-webapps -y -q
@@ -64,7 +75,7 @@ Vagrant.configure("2") do |config|
 	end
 
 config.vm.provision "shell", inline: <<-SHELL
-	grep -q '192.168.0.[10-12]' '/etc/hosts' && echo "++++ hosts file is good" || echo "192.168.0.10 frontserver1\n192.168.0.11 inserver1\n192.168.0.12 inserver2\n" >> /etc/hosts;
+	cp -f /vagrant/hosts /etc/;
 SHELL
 
 end
