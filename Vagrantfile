@@ -30,6 +30,17 @@ Vagrant.configure("2") do |config|
 	  f.close
 	end
 
+	File.open("httpd_mod_jk.conf", "w") do |f|			#generating worker.properties file
+		f.write("LoadModule jk_module modules/mod_jk.so\n")
+		f.write("JkWorkersFile conf/workers.properties\n")
+		f.write("JkShmFile /tmp/shm\n")
+		f.write("JkLogFile logs/mod_jk.log\n")
+		f.write("JkLogLevel info\n")
+		f.write("JkMount /app1/* myworker\n")
+		f.write("\n")
+	  f.close
+	end
+
 	File.open("hosts", "w") do |f|			#generating hosts file
 	  f.write("127.0.0.1 localhost\n")
 	  f.write("#{$subnetwork_net}10 frontserver1\n")
