@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
 		f.close
 	end
 
-	File.open("httpd_mod_jk.conf", "w") do |f|			#generating worker.properties file
+	File.open("httpd_mod_jk.conf", "w") do |f|			#generating httpd_mod_jk.conf file
 		f.write("LoadModule jk_module modules/mod_jk.so\n")
 		f.write("JkWorkersFile conf/workers.properties\n")
 		f.write("JkShmFile /tmp/shm\n")
@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
 		f.write("JkLogLevel info\n")
 		f.write("JkMount /app1/* myworker\n")
 		f.write("\n")
-	  f.close
+		f.close
 	end
 
 	File.open("hosts", "w") do |f|			#generating hosts file
