@@ -82,8 +82,8 @@ Vagrant.configure("2") do |config|
 		end
 	end
 
-config.vm.provision "shell", inline: <<-SHELL
-	cp -f /vagrant/hosts /etc/;
-SHELL
+	config.vm.provision "shell", inline: <<-SHELL
+		cp -f /vagrant/hosts /etc/;
+	SHELL
 
 end
